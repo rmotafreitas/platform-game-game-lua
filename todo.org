@@ -1,0 +1,7 @@
+* The first mvp beta todo list:
+- [] 1. Create a biiger map, horizontal with more colliders
+- [] 2. Player movent with forces
+- [] 3. Player dash
+- [] 4. Player jump
+- [] 5. Player animations
+

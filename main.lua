@@ -4,32 +4,25 @@ require 'player'
 
 function love.load()
     wf = require 'libs/windfield/windfield'
+    sti = require 'libs/sti/sti'
+    gameMap = sti('maps/map.lua')
     world = wf.newWorld(0, 500)
 
-    Scale = 4
-    Player.collider = world:newBSGRectangleCollider(0, 0, 20 * Scale, 26 * Scale, 7)
-    Player.collider:setFixedRotation(true)
+    walls = {}
+    mapScale = 3
 
-    Ground = world:newRectangleCollider(0, 500, 1920, 100)
-    Ground:setType('static')
+    for _, obj in pairs(gameMap.layers['walls'].objects) do
+        local wall = world:newRectangleCollider(obj.x * mapScale, obj.y * mapScale, obj.width * mapScale, obj.height * mapScale)
+        wall:setType('static')
+        table.insert(walls, wall)
+    end
 
     Player:load()
 end
 
 function love.update(dt)
-
-    local px, py = Player.collider:getLinearVelocity()
-
-    if love.keyboard.isDown('left') and px > -300 then
-        Player.collider:applyLinearImpulse(-300, 0)
-    elseif love.keyboard.isDown('right') and px < 300 then
-        Player.collider:applyLinearImpulse(300, 0)
-    end
-
     world:update(dt)
     Player:update(dt)
-    Player.x = Player.collider:getX() - 11 * Scale
-    Player.y = Player.collider:getY() - 16 * Scale
 end
 
 function love.keypressed(key)
@@ -39,6 +32,10 @@ function love.keypressed(key)
 end
 
 function love.draw()
+    love.graphics.push()
+    love.graphics.scale(mapScale)
+    gameMap:drawLayer(gameMap.layers['Tile Layer 1'])
+    gameMap:drawLayer(gameMap.layers['Tile Layer 2'])
+    love.graphics.pop()
     Player:draw()
-    world:draw()
 end
